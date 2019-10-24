@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Star Wars</title>
+	
+</head>
+	<body>
+		<style type="text/css">
+
+			* {
+				box-sizing: border-box;
+			}
+
+			.wrapper {
+				min-width: 320px;
+				max-width: 1400px;
+				margin: auto;
+				padding: 10px;
+				height: 100vh;
+				background: url(background.gif) center center;
+				background-size: 100% auto;
+				background-color: #CFD9E1;
+				padding-bottom: 45%;
+				background-repeat: no-repeat;
+				
+			}
+
+			.wars {
+				display: flex;
+				flex-direction: row;
+				text-align: left;
+			}
+
+			.ships .planets .film .list  {
+				max-width: 300px;
+				background-color: blue;
+			}
+			h1 {
+				text-align: center;
+			}
+
+			li, h1, h2 {
+				color: white;
+				font-size: 24px;
+				font-weight: bold;
+			}
+		
+		</style>
+
+		<div class = "wrapper">
+			<h1> STAR WARS</h1>
+			<div class="wars">
+				<div class="ships">
+					<h2> All Ships List</h2>
+					<ol class="notes"></ol>
+				</div>
+				<div class="film">
+					<h2> Film List</h2>
+					<ol class="notesFilm"></ol>
+				</div>
+			</div>
+		</div>
+
+	
+		<script>
+			const $notesToOl = document.querySelector('.notes');
+			const $notesToOlFilm = document.querySelector('.notesFilm');
+			$notesToOl.addEventListener('click', (event) => {
+				let find = +event.target.id;  
+				film(find);
+			});				
+			
+			createLi = function(note, class_ol, i,) {
+				const $li = document.createElement('li');
+				$li.innerText = note;
+															
+				const $div = document.createElement('div');
+				$div.append($li);
+				$div.classList = 'list'; 
+
+				if (class_ol === $notesToOl) {
+					const $button1 = document.createElement('button');
+					$button1.classList = 'FILMS'; 
+					$button1.innerText = 'FILMS';
+					$button1.id = i;
+					$div.append($button1);
+				}
+				class_ol.append($div);	
+			}
+			
+			let obj, obj1, films;
+			const xhr = new XMLHttpRequest;
+			xhr.open('get', 'https://swapi.co/api/starships/', true);
+			xhr.send();
+			xhr.onload = function () { // функция с асинхронным запросом.
+				obj = JSON.parse(this.response);
+				for (let i = 0; i < obj.results.length; i++) {
+					createLi(obj.results[i].name, $notesToOl, i );
+				}
+			}
+
+			function film (id) {
+				let arr = [];
+				arr = obj.results[id].films;
+				arr.forEach( item => {
+					const xhr = new XMLHttpRequest;
+					xhr.open('get', item, true);
+					xhr.send();
+					xhr.onload = function () { 
+						let obj = JSON.parse(this.response);
+						createLi(obj.title, $notesToOlFilm);	
+					}	
+				});
+			}
+	
+		</script>
+	</body>
+</html>
